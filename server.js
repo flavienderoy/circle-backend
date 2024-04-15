@@ -5,6 +5,9 @@ const userRoutes = require('./routes/user.routes');
 require('dotenv').config({path: "./config/.env"});
 require('./config/db');
 const { checkUser, requireAuth } = require('./middleware/auth.middleware');
+
+app.use(cors()); 
+
 const app = express();
 
 app.use(bodyParser.json());
