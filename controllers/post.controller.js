@@ -129,15 +129,16 @@ module.exports.commentPost = async (req, res) => {
         const postId = req.params.id;
         const { commenterId, commenterPseudo, text } = req.body;
 
-        // Vérifier si l'ID du poste est valide
         if (!ObjectID.isValid(postId))
             return res.status(400).send("Invalid post ID");
 
-        // Vérifier que toutes les données du commentaire sont présentes
+        if (!ObjectID.isValid(commenterId))
+        return res.status(400).send("Invalid commenterId");
+
+
         if (!commenterId || !commenterPseudo || !text)
             return res.status(400).send("Missing comment data");
 
-        // Ajouter le commentaire au poste
         const updatedPost = await PostModel.findByIdAndUpdate(
             postId,
             {
@@ -148,16 +149,15 @@ module.exports.commentPost = async (req, res) => {
                         text,
                         timestamp: new Date().getTime(),
                     },
-                },
+                }
             },
             { new: true }
         );
 
-        // Vérifier si le poste a été trouvé et mis à jour
         if (!updatedPost)
             return res.status(404).send("Post not found");
 
-        // Retourner le poste mis à jour en réponse
+
         return res.status(200).json(updatedPost);
     } catch (err) {
         console.error("Error adding comment:", err);
@@ -166,51 +166,75 @@ module.exports.commentPost = async (req, res) => {
 };
 
 
+
 module.exports.editCommentPost = async (req, res) => {
-    if (!ObjectID.isValid(req.params.id))
-      return res.status(400).send("ID unknown : " + req.params.id);
-  
     try {
-      const updatedPost = await PostModel.findById(req.params.id);
+        const postId = req.params.id;
+        const commentId = req.body.commentId;
+        const newText = req.body.text;
 
-      const theComment = updatedPost.comments.find((comment) =>
-        comment._id.equals(req.body.commentId)
-      );
+        if (!ObjectID.isValid(postId))
+            return res.status(400).send("ID unknown : " + postId);
 
-      if (!theComment) 
-        return res.status(404).send("Comment not found");
+        const updatedPost = await PostModel.findById(postId);
 
-      theComment.text = req.body.text;
+        if (!updatedPost)
+            return res.status(404).send("Post not found");
 
-      await updatedPost.save();
-      
-      return res.status(200).json(updatedPost);
+        const theComment = updatedPost.comments.find(comment =>
+            comment._id.equals(commentId)
+        );
+
+        if (!theComment)
+            return res.status(404).send("Comment not found");
+
+        theComment.text = newText;
+
+        await updatedPost.save();
+
+        return res.status(200).json(updatedPost);
     } catch (err) {
-      return res.status(500).send(err);
+        console.error("Error editing comment:", err);
+        return res.status(500).send("Failed to edit comment");
     }
-  };
+};
+
+
 
 module.exports.deleteCommentPost = async (req, res) => {
-    if (!ObjectID.isValid(req.params.id))
-      return res.status(400).send("ID unknown : " + req.params.id);
-  
     try {
-      const updatedPost = await PostModel.findByIdAndUpdate(
-        req.params.id,
-        {
-          $pull: {
-            comments: {
-              _id: req.body.commentId,
+        const postId = req.params.id;
+        const commentId = req.body.commentId;
+
+        // Vérifier si l'ID du post est valide
+        if (!ObjectID.isValid(postId))
+            return res.status(400).send("Invalid post ID");
+
+        // Vérifier si l'ID du commentaire est valide
+        if (!ObjectID.isValid(commentId))
+            return res.status(400).send("Invalid comment ID");
+
+        // Trouver et mettre à jour le post en retirant le commentaire
+        const updatedPost = await PostModel.findByIdAndUpdate(
+            postId,
+            {
+                $pull: {
+                    comments: {
+                        _id: commentId,
+                    },
+                },
             },
-          },
-        },
-        { new: true }
-      );
+            { new: true }
+        );
 
-      return res.status(200).json(updatedPost);
+        // Vérifier si le post a été trouvé et mis à jour
+        if (!updatedPost)
+            return res.status(404).send("Post not found");
+
+        // Retourner le post mis à jour en réponse
+        return res.status(200).json(updatedPost);
     } catch (err) {
-      return res.status(400).send(err);
+        console.error("Error deleting comment:", err);
+        return res.status(500).send("Failed to delete comment");
     }
-  };
-
-  
+};
