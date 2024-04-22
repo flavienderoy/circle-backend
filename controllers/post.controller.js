@@ -23,7 +23,7 @@ module.exports.createPost = async (req, res) => {
         // Chemin du fichier uploader
         const uploadedFilePath = req.file.path;
 
-        // Chemin du fichier qui sera renommé avec le nom de l'utilisateur
+        // Chemin du fichier qui sera renommé 
         const newFilePath = `${__dirname}/../client/public/uploads/posts/${fileName}`;
 
         // Renommer le fichier 
@@ -40,7 +40,7 @@ module.exports.createPost = async (req, res) => {
     const newPost = new PostModel({
         posterId: req.body.posterId,
         message: req.body.message,
-        picture: fileName ? "./uploads/posts/" + fileName : "", // Utiliser le nom du fichier renommé
+        picture: fileName ? "./uploads/posts/" + fileName : "",
         video: req.body.video,
         likers: [],
         comments: []

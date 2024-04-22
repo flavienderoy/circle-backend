@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const postController = require('../controllers/post.controller'); 
 const multer = require("multer");
-const upload = multer(multer({ dest: "./client/public/uploads/profil/" }));
+const upload = multer(multer({ dest: "./client/public/uploads/posts/" }));
 
 router.get('/', postController.readPost);
 router.post('/',upload.single("file"), postController.createPost);
@@ -10,7 +10,6 @@ router.delete('/:id', postController.deletePost);
 router.patch('/like-post/:id', postController.likePost);
 router.patch('/unlike-post/:id', postController.unlikePost);
 
-//comments
 
 router.patch('/comment-post/:id', postController.commentPost);
 router.patch('/edit-comment-post/:id', postController.editCommentPost);
