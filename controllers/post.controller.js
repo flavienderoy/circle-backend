@@ -6,7 +6,18 @@ const { promisify } = require("util");
 const pipeline = promisify(require("stream").pipeline);
 const { uploadErrors } = require("../utils/errors.utils");
 
-module.exports.readPost = (req, res) => {
+module.exports.getAllPosts = async (req, res) => {
+    /*PostModel.find((err, docs) => {
+        if (!err) res.send(docs);
+        else console.log('Error to get data : ' + err);
+    });*/
+
+    const posts = await PostModel.find()
+    console.log(posts)
+  res.status(200).json(posts)
+};
+
+module.exports.readPostById = (req, res) => {
     PostModel.find((err, docs) => {
         if (!err) res.send(docs);
         else console.log('Error to get data : ' + err);
