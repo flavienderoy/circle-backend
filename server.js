@@ -19,11 +19,12 @@ const corsOptions = {
   'preflightContinue': false
 }
 app.use(cors(corsOptions));
-
-app.use('/client', express.static('client'))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+
+app.use('/client', express.static('client'))
 
 // jwt
 app.get('*', checkUser);
