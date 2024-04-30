@@ -42,6 +42,10 @@ const userSchema = new mongoose.Schema(
     },
     likes: {
       type: [ String ]
+    },
+    role: {
+      type: Number,
+      default: 1
     }
   },
   {
