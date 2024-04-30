@@ -10,7 +10,7 @@ const cors = require('cors')
 
 const app = express()
 
-const corsOptions = {
+  const corsOptions = {
   origin: process.env.CLIENT_URL,
   credentials: true,
   'allowedHeaders': [ 'sessionId', 'Content-Type' ],
@@ -19,6 +19,7 @@ const corsOptions = {
   'preflightContinue': false
 }
 app.use(cors(corsOptions));
+/*app.use(cors());*/
 
 app.use('/client', express.static('client'))
 app.use(bodyParser.json());
