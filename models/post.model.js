@@ -1,5 +1,5 @@
-const mongoose = require('mongoose'); 
-const { trim } = require('validator');
+const mongoose = require('mongoose')
+const { trim } = require('validator')
 
 const PostSchema = new mongoose.Schema(
     {
@@ -19,7 +19,7 @@ const PostSchema = new mongoose.Schema(
             type: String,
         },
         likers: {
-            type: [String],
+            type: [ String ],
             required: true,
         },
         comments: {
@@ -32,11 +32,16 @@ const PostSchema = new mongoose.Schema(
                 }
             ],
             required: true,
-        }
+        },
+        visibility: {
+            type: String,
+            enum: [ 'public', 'private' ], 
+            default: 'public',
+        },
     },
     {
         timestamps: true,
     }
-);
+)
 
-module.exports = mongoose.model('post', PostSchema);
+module.exports = mongoose.model('post', PostSchema)
