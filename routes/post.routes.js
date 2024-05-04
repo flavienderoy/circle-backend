@@ -4,10 +4,12 @@ const multer = require("multer");
 const upload = multer(multer({ dest: "./client/public/uploads/posts/" }));
 
 router.get('/', postController.getAllPosts);
+router.get('/user/:userId', postController.getAllPostsByUser);
 router.get('/:id', postController.readPostById);
 router.post('/',upload.single("file"), postController.createPost);
 router.put('/:id', postController.updatePost); 
 router.delete('/:id', postController.deletePost);
+router.delete('/user/:id', postController.deleteAllPostsByUser);
 router.patch('/like-post/:id', postController.likePost);
 router.patch('/unlike-post/:id', postController.unlikePost);
 

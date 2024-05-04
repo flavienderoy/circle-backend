@@ -63,6 +63,9 @@ module.exports.deleteUser = async (req, res) => {
       return res.status(404).send('User not found')
     }
 
+    // Supprimer tous les posts de l'utilisateur
+    await postModel.deleteMany({ posterId: req.params.id })
+
     res.status(200).json({ message: 'Successfully deleted.' })
   } catch (err) {
     return res.status(500).json({ message: err.message })
