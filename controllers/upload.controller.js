@@ -6,9 +6,6 @@ const { uploadErrors } = require("../utils/errors.utils");
 
 
 module.exports.uploadProfil = async (req, res) => {
-  console.log(req.body.name)
-  console.log(req.file)
-
   // extension du fichier
   const extension = req.file.mimetype.split("/")[1];
   // nom user qui devien nom du fichier

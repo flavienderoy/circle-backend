@@ -5,6 +5,8 @@ const upload = multer(multer({ dest: "./client/public/uploads/posts/" }));
 
 router.get('/', postController.getAllPosts);
 router.get('/user/:userId', postController.getAllPostsByUser);
+router.get('/home', postController.getAllPostsForHomeUser);
+router.get('/public', postController.getAllPostsForPublicUser);
 router.get('/:id', postController.readPostById);
 router.post('/',upload.single("file"), postController.createPost);
 router.put('/:id', postController.updatePost); 

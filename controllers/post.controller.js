@@ -7,13 +7,7 @@ const pipeline = promisify(require("stream").pipeline)
 const { uploadErrors } = require("../utils/errors.utils")
 
 module.exports.getAllPosts = async (req, res) => {
-    /*PostModel.find((err, docs) => {
-        if (!err) res.send(docs);
-        else console.log('Error to get data : ' + err);
-    });*/
-
     const posts = await PostModel.find()
-    console.log(posts)
     res.status(200).json(posts)
 }
 
@@ -25,6 +19,29 @@ module.exports.getAllPostsByUser = async (req, res) => {
         res.status(200).json(userPosts)
     } catch (error) {
         console.error("Error fetching user posts:", error)
+        res.status(500).json({ message: "Internal server error" })
+    }
+}
+
+module.exports.getAllPostsForHomeUser = async (req, res) => {
+    const user = res.locals.user
+    try {
+        const posts = await PostModel.find({
+            posterId: { $in: [ user._id, ...user.following ] }
+        })
+        res.status(200).json(posts)
+    } catch (error) {
+        console.error("Error fetching posts by users:", error)
+        res.status(500).json({ message: "Internal server error" })
+    }
+}
+
+module.exports.getAllPostsForPublicUser = async (req, res) => {
+    const posts = await PostModel.find({ visibility: "public" })
+    try {
+        res.status(200).json(posts)
+    } catch (error) {
+        console.error("Error fetching public posts:", error)
         res.status(500).json({ message: "Internal server error" })
     }
 }
@@ -136,7 +153,7 @@ module.exports.deleteAllPostsByUser = async (req, res) => {
         console.error("Error deleting user posts:", error)
         res.status(500).json({ success: false, message: "Failed to delete user posts." })
     }
-};
+}
 
 module.exports.likePost = async (req, res) => {
     if (!ObjectID.isValid(req.params.id))
